@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TBR Alternating Reading Checklist</title>
+<style>
+:root{
+  --bg:#f7f3ea;--panel:#fffdf8;--ink:#25211b;--muted:#6f6659;--line:#ded5c8;
+  --accent:#607b63;--accent-dark:#3f6045;--soft:#edf3ec;--warn:#8b642f;--done:#e8efe7;
+}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}header{background:linear-gradient(135deg,#eef3ec,#fff8ec);border-bottom:1px solid var(--line);padding:28px 16px 18px}.wrap{max-width:1120px;margin:0 auto}h1{margin:0 0 6px;font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.1}.subtitle{color:var(--muted);max-width:860px;margin:0}.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:18px}.stat{background:rgba(255,253,248,.9);border:1px solid var(--line);border-radius:14px;padding:12px}.stat b{display:block;font-size:1.35rem}.bar{height:12px;background:#e8dfd3;border-radius:999px;overflow:hidden;border:1px solid var(--line);margin-top:12px}.fill{height:100%;width:0%;background:var(--accent);transition:width .2s ease}.controls{position:sticky;top:0;z-index:20;background:rgba(255,253,248,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}.controls .wrap{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px}button,input,select,textarea{font:inherit}button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 13px;min-height:44px;cursor:pointer;color:var(--ink)}button.primary{background:var(--accent);color:#fff;border-color:var(--accent-dark)}button.danger{color:#7d2d1d}.saved{align-self:center;color:var(--muted);font-size:.92rem;margin-left:auto}main{padding:22px 16px 44px}.note{background:var(--soft);border-left:4px solid var(--accent);border-radius:12px;padding:12px 14px;margin-bottom:16px;color:#2f3f32}.grid{display:grid;grid-template-columns:1fr;gap:14px}.section{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04)}.section-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}.section h2{margin:0 0 4px;font-size:1.25rem}.section p{margin:0;color:var(--muted)}.task{display:grid;grid-template-columns:auto 1fr;gap:12px;border-top:1px dashed var(--line);padding:14px 0}.task:first-of-type{margin-top:12px}.task input[type="checkbox"]{width:24px;height:24px;margin-top:2px;accent-color:var(--accent)}.task.done .title{text-decoration:line-through;color:var(--muted)}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}.pill{font-size:.8rem;border:1px solid var(--line);border-radius:999px;padding:3px 8px;background:#fff;color:var(--muted)}.title{font-weight:650}.task textarea{width:100%;min-height:58px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px;resize:vertical;margin-top:8px}.task select{border:1px solid var(--line);border-radius:999px;background:#fff;padding:7px 9px;min-height:38px}.addbox{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:8px}.addbox input,.newcat input{border:1px solid var(--line);border-radius:12px;padding:10px;min-height:44px;background:#fff}.newcat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:14px;display:grid;grid-template-columns:1fr 1fr auto;gap:8px}.small{font-size:.88rem;color:var(--muted)}footer{padding:0 16px 35px;color:var(--muted);font-size:.9rem}@media(max-width:720px){.saved{width:100%;margin-left:0}.newcat,.addbox{grid-template-columns:1fr}.section{padding:15px}.controls{position:static}}@media print{.controls,.addbox,.newcat,.delete-btn{display:none!important}body{background:#fff}.section{break-inside:avoid;box-shadow:none}.task textarea{border:0;border-bottom:1px solid #ccc;border-radius:0}.bar{border-color:#aaa}.fill{background:#777}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>TBR Alternating Reading Checklist</h1><p class="subtitle">Reading order alternates AI / clinical-medical / Landgrebe work until the list is complete. The current read is placed first.</p><div class="summary"><div class="stat"><span>Total items</span><b id="total">0</b></div><div class="stat"><span>Completed</span><b id="completed">0</b></div><div class="stat"><span>Progress</span><b id="percent">0%</b></div><div class="stat"><span>Next item</span><b id="nextItem" style="font-size:1rem">—</b></div></div><div class="bar"><div class="fill" id="fill"></div></div></div></header>
+<div class="controls"><div class="wrap"><button class="primary" onclick="saveState(true)">Save locally</button><button onclick="exportHTML()">Export current HTML</button><button onclick="window.print()">Print / save PDF</button><button onclick="resetChecks()">Reset checks</button><button class="danger" onclick="clearSavedData()">Clear local data</button><span class="saved" id="savedStatus">Not saved yet</span></div></div>
+<main class="wrap"><div class="note"><strong>Pattern:</strong> AI → clinical/medical → Landgrebe. “Clinical/medical” includes both clinical NLP/AI papers and clinical studies; Landgrebe items marked “not printed” retain that note.</div><div id="sections" class="grid"></div><div class="newcat"><input id="newCatTitle" placeholder="New category title" /><input id="newCatDesc" placeholder="Optional category description" /><button onclick="addCategory()">Add category</button></div></main>
+<footer class="wrap">Local data is stored only in this browser. Use “Export current HTML” to create a portable snapshot with checks, notes, added tasks, and categories embedded.</footer>
+<script>
+const STORAGE_KEY='tbrAlternatingReadingChecklist_20260615_v1';
+let data={sections:[
+{ id:'reading-order', title:'Alternating reading order', desc:'Work down this sequence from top to bottom.', tasks:[
+{id:'t01',title:'End-to-End Context Compression at Scale',type:'AI',status:'Currently reading',notes:''},
+{id:'t02',title:'Prospective evaluation of antibiotic TDM target attainment',type:'Clinical/medical',status:'Read now',notes:''},
+{id:'t03',title:'An argument for the impossibility of machine intelligence',type:'Landgrebe',status:'Not printed',notes:''},
+{id:'t04',title:'Deployment-Centered Evaluation',type:'AI',status:'Read now',notes:''},
+{id:'t05',title:'Therapeutic Drug Monitoring of Direct Oral Anticoagulants',type:'Clinical/medical',status:'Read now',notes:''},
+{id:'t06',title:'What AlphaFold teaches us about deep learning with prior knowledge',type:'Landgrebe',status:'Not printed',notes:''},
+{id:'t07',title:'sebis at CRF Filling 2026',type:'AI',status:'Read now',notes:''},
+{id:'t08',title:'Prospective Audit and Feedback to Reduce Antibiotic Overuse at Hospital Discharge',type:'Clinical/medical',status:'Read now',notes:''},
+{id:'t09',title:'Irreverend: Why Machines Will Never Rule the World - On AI and Faith',type:'Landgrebe',status:'Not printed',notes:''},
+{id:'t10',title:'Minim',type:'AI',status:'Read now',notes:''},
+{id:'t11',title:'Utilization of Apixaban Pharmacokinetics for Dose Optimization in High-Risk Elderly Patients',type:'Clinical/medical',status:'Read now',notes:''},
+{id:'t12',title:'Sam Harris and the Myth of Artificial Intelligence',type:'Landgrebe',status:'Not printed',notes:''},
+{id:'t13',title:'Zero-source hallucination detection',type:'AI',status:'Read now',notes:''},
+{id:'t14',title:'Why machines do not understand: A response to Sogaard',type:'Landgrebe',status:'Not printed',notes:''},
+{id:'t15',title:'Applicability Condition Extraction for Therapeutic Drug-Disease Relations',type:'AI',status:'Read now',notes:''},
+{id:'t16',title:'Intelligence. And what computers still can\'t do',type:'Landgrebe',status:'Not printed',notes:''},
+{id:'t17',title:'Why machines will never rule the world: artificial intelligence without fear',type:'Landgrebe',status:'Not printed',notes:''},
+{id:'t18',title:'A Husserlian ontology of the science of physics',type:'Landgrebe',status:'Not printed',notes:''}
+]},
+{ id:'capture', title:'Reading capture fields', desc:'Optional follow-up tasks for synthesis and portability.', tasks:[
+{id:'t19',title:'For each completed item, write a 3–5 sentence takeaway in the notes field',type:'Synthesis',status:'Optional',notes:''},
+{id:'t20',title:'Mark any item that should become a deeper appraisal, protocol, or reference HTML file',type:'Synthesis',status:'Optional',notes:''}
+]}]};
+function uid(){return 'id'+Math.random().toString(36).slice(2,10)}
+function loadState(){const embedded=document.getElementById('embeddedState');if(embedded){try{data=JSON.parse(embedded.textContent)}catch(e){}}const saved=localStorage.getItem(STORAGE_KEY);if(saved){try{data=JSON.parse(saved)}catch(e){}}render();updateSummary();}
+function saveState(manual=false){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));const ts=new Date().toLocaleString();document.getElementById('savedStatus').textContent=(manual?'Saved locally ':'Autosaved ')+ts;}
+function render(){const root=document.getElementById('sections');root.innerHTML='';data.sections.forEach(sec=>{const el=document.createElement('section');el.className='section';el.dataset.id=sec.id;el.innerHTML=`<div class="section-head"><div><h2>${esc(sec.title)}</h2><p>${esc(sec.desc||'')}</p></div><button class="delete-btn" onclick="deleteCategory('${sec.id}')">Remove</button></div><div class="tasks"></div><div class="addbox"><input placeholder="Add task to ${esc(sec.title)}" id="add-${sec.id}"><button onclick="addTask('${sec.id}')">Add task</button></div>`;const tasks=el.querySelector('.tasks');sec.tasks.forEach(task=>tasks.appendChild(taskEl(sec.id,task)));root.appendChild(el);});}
+function taskEl(secId,task){const row=document.createElement('div');row.className='task'+(task.checked?' done':'');row.dataset.id=task.id;row.innerHTML=`<input type="checkbox" ${task.checked?'checked':''} onchange="toggleTask('${secId}','${task.id}',this.checked)"><div><div class="title">${esc(task.title)}</div><div class="meta"><span class="pill">${esc(task.type||'General')}</span><span class="pill">${esc(task.status||'')}</span><select onchange="setField('${secId}','${task.id}','priority',this.value)"><option value="">Priority</option>${['Today','Next','Later','Waiting'].map(x=>`<option ${task.priority===x?'selected':''}>${x}</option>`).join('')}</select></div><textarea placeholder="Notes, key finding, citation, next action..." oninput="setField('${secId}','${task.id}','notes',this.value)">${esc(task.notes||'')}</textarea></div>`;return row;}
+function findTask(secId,taskId){const sec=data.sections.find(s=>s.id===secId);return [sec,sec?.tasks.find(t=>t.id===taskId)];}
+function toggleTask(secId,taskId,val){const [sec,t]=findTask(secId,taskId);if(t){t.checked=val;render();updateSummary();saveState();}}
+function setField(secId,taskId,field,val){const [sec,t]=findTask(secId,taskId);if(t){t[field]=val;updateSummary();saveState();}}
+function addTask(secId){const input=document.getElementById('add-'+secId);const title=input.value.trim();if(!title)return;const sec=data.sections.find(s=>s.id===secId);sec.tasks.push({id:uid(),title,type:'Added',status:'New',notes:''});input.value='';render();updateSummary();saveState();}
+function addCategory(){const title=document.getElementById('newCatTitle').value.trim();if(!title)return;const desc=document.getElementById('newCatDesc').value.trim();data.sections.push({id:uid(),title,desc,tasks:[]});document.getElementById('newCatTitle').value='';document.getElementById('newCatDesc').value='';render();updateSummary();saveState();}
+function deleteCategory(secId){if(!confirm('Remove this category and its tasks?'))return;data.sections=data.sections.filter(s=>s.id!==secId);render();updateSummary();saveState();}
+function updateSummary(){const tasks=data.sections.flatMap(s=>s.tasks);const total=tasks.length;const done=tasks.filter(t=>t.checked).length;const pct=total?Math.round(done/total*100):0;document.getElementById('total').textContent=total;document.getElementById('completed').textContent=done;document.getElementById('percent').textContent=pct+'%';document.getElementById('fill').style.width=pct+'%';const next=tasks.find(t=>!t.checked);document.getElementById('nextItem').textContent=next?next.title:'Complete';}
+function resetChecks(){data.sections.forEach(s=>s.tasks.forEach(t=>t.checked=false));render();updateSummary();saveState(true);}
+function clearSavedData(){if(!confirm('Clear local saved data for this checklist?'))return;localStorage.removeItem(STORAGE_KEY);location.reload();}
+function exportHTML(){saveState(true);let html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;const state='<script id="embeddedState" type="application/json">'+JSON.stringify(data).replace(/</g,'\\u003c')+'<\\/script>';html=html.replace('</body>',state+'</body>');const blob=new Blob([html],{type:'text/html'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='tbr_alternating_reading_checklist_snapshot.html';a.click();URL.revokeObjectURL(url);}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+loadState();
+</script>
+</body>
+</html>
